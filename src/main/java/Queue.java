@@ -3,25 +3,15 @@ import java.util.HashSet;
 import java.util.NoSuchElementException;
 import java.util.Set;
 
-public class Queue <E> {
-    private int top = -1;
+public class Queue<E> {
     private E[] elements = (E[]) new Object[10];
+    private int top = -1;
 
     public void add(E value) {
         if (top >= elements.length - 1) {
             expandSize();
         }
         elements[++top] = value;
-    }
-
-    public E remove() {
-        if (top < 0) {
-            throw new NoSuchElementException();
-        }
-
-        E result = elements[0];
-        remove(0);
-        return result;
     }
 
     public E peek() {
@@ -32,17 +22,21 @@ public class Queue <E> {
     }
 
     public boolean isEmpty() {
-        return (top == -1);
+        return top == -1;
     }
 
-    private void expandSize() {
-        int newLength = elements.length * 2;
-        elements = Arrays.copyOf(elements, newLength);
+    public E remove() {
+        if (top < 0) {
+            throw new NoSuchElementException();
+        }
+        E example = elements[0];
+        remove(0);
+        return example;
     }
 
     public void remove(int index) {
         if (index > top || index < 0) {
-            throw new NoSuchElementException();
+            throw new IndexOutOfBoundsException();
         }
 
         for (int i = index; i < elements.length - 1; i++) {
@@ -52,41 +46,44 @@ public class Queue <E> {
     }
 
     public void removeAll(E value) {
-        int oldSize = size();
-        for (int i = oldSize - 1; i >= 0; i--) {
-            if (elements[i].equals(value)) {
+        if (top < 0) {
+            throw new NoSuchElementException();
+        }
+        for (int i = 0; i <= size() - 1; i++) {
+            if (elements[i] == value) {
                 remove(i);
+                i--;
             }
         }
     }
 
     public void removeDuplicates() {
-        Set<E> setOfElements = new HashSet<>();
-        for (int i = 0; i < size(); i++) {
-            E value = elements[i];
-            if (!setOfElements.contains(value)) {
-                setOfElements.add(value);
+        Set<E> duplicate = new HashSet<>();
+        for (int i = 0; i <= top - 1; i++) {
+            if (!duplicate.contains(elements[i])) {
+                duplicate.add(elements[i]);
             } else {
                 remove(i);
             }
         }
     }
 
-    public int size() {
-        return top + 1;
-    }
-
     public E get(int index) {
         if (top < index) {
             throw new IndexOutOfBoundsException();
         }
+
         return elements[index];
     }
 
-    public boolean equals(Object o) {
-        if (o instanceof Queue<?> && ((Queue<E>) o).size() == this.size()) {
-            for (int i = 0; i < this.size(); i++) {
-                if (!((Queue<?>) o).get(i).equals(elements[i])) {
+    public int size() {
+        return top + 1;
+    }
+
+    public boolean equals(Object obj) {
+        if (obj instanceof Queue<?> && ((Queue<?>) obj).size() == this.size()) {
+            for (int i = 0; i < size(); i++) {
+                if (!((Queue<?>) obj).get(i).equals(elements[i])) {
                     return false;
                 }
             }
@@ -97,5 +94,10 @@ public class Queue <E> {
 
     public String toString() {
         return Arrays.toString(elements);
+    }
+
+    private void expandSize() {
+        int increasedSize = elements.length * 2;
+        elements = Arrays.copyOf(elements, increasedSize);
     }
 }

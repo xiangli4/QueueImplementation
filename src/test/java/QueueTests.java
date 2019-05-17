@@ -112,13 +112,26 @@ public class QueueTests {
         assertArrayEquals(expected, output);
     }
 
-    @Test(expected = NoSuchElementException.class)
+    @Test
+    public void removeFirstIndex() {
+        Queue<String> queue = new Queue<>();
+        queue.add("hello");
+        queue.add("beautiful");
+        queue.add("world");
+        queue.remove(0);
+
+        String[] expected = {"beautiful", "world"};
+        String[] output = {queue.remove(), queue.remove()};
+        assertArrayEquals(expected, output);
+    }
+
+    @Test(expected = IndexOutOfBoundsException.class)
     public void removeNegativeIndex() {
         Queue<String> queue = new Queue<>();
         queue.remove(-1);
     }
 
-    @Test(expected = NoSuchElementException.class)
+    @Test(expected = IndexOutOfBoundsException.class)
     public void removeHighIndex() {
         Queue<String> queue = new Queue<>();
         queue.remove(42);
